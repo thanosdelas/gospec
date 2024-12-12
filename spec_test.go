@@ -2,6 +2,7 @@ package spec
 
 import(
   "fmt"
+  "errors"
   "testing"
 )
 
@@ -36,7 +37,7 @@ func TestSpecToEqIntFailure(testing *testing.T) {
 
   spec.Expect(expected).ToEq(result)
   if mockLogger.Message != expectedErrorMessage {
-    testing.Fatalf(fmt.Sprintf("Expected error message: { %s }, but got { %s }", expectedErrorMessage, mockLogger.Message))
+    testing.Fatalf(fmt.Sprintf("%sExpected error message: { %s }, but got { %s }%s", magentaStart, expectedErrorMessage, mockLogger.Message, colorEnd))
   }
 }
 
@@ -48,7 +49,7 @@ func TestSpecToNotEqIntSuccess(testing *testing.T) {
 
   spec.Expect(expected).ToNotEq(result)
   if mockLogger.Message != "" {
-    testing.Fatalf(fmt.Sprintf("Expected no error, but got: { %s }", mockLogger.Message))
+    testing.Fatalf(fmt.Sprintf("%sExpected no error, but got: { %s }%s", magentaStart, mockLogger.Message, colorEnd))
   }
 }
 
@@ -62,6 +63,31 @@ func TestSpecToNotEqIntFailure(testing *testing.T) {
   spec.Expect(expected).ToNotEq(result)
 
   if mockLogger.Message != expectedErrorMessage {
-    testing.Fatalf(fmt.Sprintf("Expected error message: { %s }, but got { %s }", expectedErrorMessage, mockLogger.Message))
+    testing.Fatalf(fmt.Sprintf("%sExpected error message: { %s }, but got { %s }%s", magentaStart, expectedErrorMessage, mockLogger.Message, colorEnd))
+  }
+}
+
+func TestSpecExpectNoErrorSuccess(testing *testing.T) {
+  var mockLogger *MockLogger = &MockLogger{}
+  var spec = Spec{Testing: testing, logger: mockLogger}
+  // var err = errors.New("Something went wrong")
+  var err error = nil
+
+  spec.ExpectNoError(err)
+
+  if mockLogger.Message != "" {
+    testing.Fatalf(fmt.Sprintf("%sExpected no error, but got: { %s }%s", magentaStart, mockLogger.Message, colorEnd))
+  }
+}
+
+func TestSpecExpectNoErrorFailure(testing *testing.T) {
+  var mockLogger *MockLogger = &MockLogger{}
+  var spec = Spec{Testing: testing, logger: mockLogger}
+  var err error = errors.New("Something went wrong")
+
+  spec.ExpectNoError(err)
+
+  if mockLogger.Message == "" {
+    testing.Fatalf(fmt.Sprintf("%sExpected error message: { %s } but got empty string%s", err, magentaStart, colorEnd))
   }
 }
