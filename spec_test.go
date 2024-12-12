@@ -23,6 +23,7 @@ func TestSpecToEqIntSuccess(testing *testing.T) {
   var result int = 55;
 
   spec.Expect(expected).ToEq(result)
+
   if mockLogger.Message != "" {
     testing.Fatalf(fmt.Sprintf("%sExpected no error but got: { %s }%s", magentaStart, mockLogger.Message, colorEnd))
   }
@@ -48,6 +49,7 @@ func TestSpecToNotEqIntSuccess(testing *testing.T) {
   var result int = 65;
 
   spec.Expect(expected).ToNotEq(result)
+
   if mockLogger.Message != "" {
     testing.Fatalf(fmt.Sprintf("%sExpected no error, but got: { %s }%s", magentaStart, mockLogger.Message, colorEnd))
   }
@@ -70,7 +72,6 @@ func TestSpecToNotEqIntFailure(testing *testing.T) {
 func TestSpecExpectNoErrorSuccess(testing *testing.T) {
   var mockLogger *MockLogger = &MockLogger{}
   var spec = Spec{Testing: testing, logger: mockLogger}
-  // var err = errors.New("Something went wrong")
   var err error = nil
 
   spec.ExpectNoError(err)
@@ -89,5 +90,33 @@ func TestSpecExpectNoErrorFailure(testing *testing.T) {
 
   if mockLogger.Message == "" {
     testing.Fatalf(fmt.Sprintf("%sExpected error message: { %s } but got empty string%s", err, magentaStart, colorEnd))
+  }
+}
+
+func TestSpecExpectToEqWithTypeMismatch(testing *testing.T) {
+  var mockLogger *MockLogger = &MockLogger{}
+  var spec = Spec{Testing: testing, logger: mockLogger}
+  var expected int = 55;
+  var result string = "55";
+  var expectedErrorMessage = fmt.Sprintf("%sType mismatch between operands; cannot compare int with string%s", redStart, colorEnd)
+
+  spec.Expect(expected).ToEq(result)
+
+  if mockLogger.Message != expectedErrorMessage {
+    testing.Fatalf(fmt.Sprintf("%sExpected error message: { %s }, but got { %s }%s", magentaStart, expectedErrorMessage, mockLogger.Message, colorEnd))
+  }
+}
+
+func TestSpecExpectToNotEqWithTypeMismatch(testing *testing.T) {
+  var mockLogger *MockLogger = &MockLogger{}
+  var spec = Spec{Testing: testing, logger: mockLogger}
+  var expected int = 55;
+  var result string = "55";
+  var expectedErrorMessage = fmt.Sprintf("%sType mismatch between operands; cannot compare int with string%s", redStart, colorEnd)
+
+  spec.Expect(expected).ToNotEq(result)
+
+  if mockLogger.Message != expectedErrorMessage {
+    testing.Fatalf(fmt.Sprintf("%sExpected error message: { %s }, but got { %s }%s", magentaStart, expectedErrorMessage, mockLogger.Message, colorEnd))
   }
 }

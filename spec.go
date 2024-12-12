@@ -69,7 +69,9 @@ func (spec *Spec) ExpectNoError(leftOperand any) {
 func (spec *Spec) ToEq(rightOperand any) *Spec {
   spec.rightOperand = rightOperand
 
-  spec.verifytTypeMismatch()
+  if !spec.verifytTypeMismatch() {
+    return spec
+  }
 
   // Exclusive comparison for primitive data types.
   if spec.operandsAreErrors() {
@@ -108,7 +110,9 @@ func (spec *Spec) ToEq(rightOperand any) *Spec {
 func (spec *Spec) ToNotEq(rightOperand any) *Spec {
   spec.rightOperand = rightOperand
 
-  spec.verifytTypeMismatch()
+  if !spec.verifytTypeMismatch() {
+    return spec
+  }
 
   // Exclusive comparison for primitive data types.
   if spec.operandsAreErrors() {
@@ -145,7 +149,7 @@ func (spec *Spec) ToNotEq(rightOperand any) *Spec {
 // Private
 //
 
-func (spec *Spec) verifytTypeMismatch() {
+func (spec *Spec) verifytTypeMismatch() bool {
   if reflect.TypeOf(spec.leftOperand) != reflect.TypeOf(spec.rightOperand) {
     printStack()
 
@@ -154,7 +158,11 @@ func (spec *Spec) verifytTypeMismatch() {
       reflect.TypeOf(spec.leftOperand),
       reflect.TypeOf(spec.rightOperand),
     )
+
+    return false
   }
+
+  return true
 }
 
 func (spec *Spec) operandsAreErrors() bool {
