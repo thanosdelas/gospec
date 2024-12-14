@@ -70,6 +70,14 @@ func (spec *Spec) ToEq(rightOperand any) *Spec {
   spec.rightOperand = rightOperand
 
   if !spec.verifytTypeMismatch() {
+    printStack()
+
+    spec.logger.Fatalf(
+      errorMessage("Type mismatch between operands; cannot compare %v with %v"),
+      reflect.TypeOf(spec.leftOperand),
+      reflect.TypeOf(spec.rightOperand),
+    )
+
     return spec
   }
 
@@ -111,6 +119,14 @@ func (spec *Spec) ToNotEq(rightOperand any) *Spec {
   spec.rightOperand = rightOperand
 
   if !spec.verifytTypeMismatch() {
+    printStack()
+
+    spec.logger.Fatalf(
+      errorMessage("Type mismatch between operands; cannot compare %v with %v"),
+      reflect.TypeOf(spec.leftOperand),
+      reflect.TypeOf(spec.rightOperand),
+    )
+
     return spec
   }
 
@@ -151,14 +167,6 @@ func (spec *Spec) ToNotEq(rightOperand any) *Spec {
 
 func (spec *Spec) verifytTypeMismatch() bool {
   if reflect.TypeOf(spec.leftOperand) != reflect.TypeOf(spec.rightOperand) {
-    printStack()
-
-    spec.logger.Fatalf(
-      errorMessage("Type mismatch between operands; cannot compare %v with %v"),
-      reflect.TypeOf(spec.leftOperand),
-      reflect.TypeOf(spec.rightOperand),
-    )
-
     return false
   }
 
