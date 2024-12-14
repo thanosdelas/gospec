@@ -23,10 +23,12 @@ type Spec struct {
 
 const color bool = true
 const greenStart string = "\033[92m"
+const greenBoldStart string = "\033[1;32m"
 const redStart string = "\033[31;1m"
 const magentaStart string = "\033[95m"
 const yellowStart string = "\033[33m"
 const yellowStartBold string = "\033[33;1m"
+const blueStartBold string = "\033[1;34m"
 const colorEnd string = "\033[0m"
 
 /**
@@ -234,5 +236,9 @@ func printStack() {
 func (spec *Spec) ensureTestingIsProvided() {
   if spec.Testing == nil {
     panic(errorMessage("You must provide *testing.T to Spec.Testing in order to use Spec (spec := spec.Spec{Testing: <*testing.T>})"))
+  }
+
+  if spec.logger == nil {
+    spec.logger = spec.Testing
   }
 }

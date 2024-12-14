@@ -13,7 +13,7 @@ type MockLogger struct {
 func (mockLogger *MockLogger) Fatalf(format string, args ...any) {
   mockLogger.Message = fmt.Sprintf(format, args...)
 
-  fmt.Print(fmt.Sprintf("\n%sFatalf called with message: %s%s\n\n", greenStart, mockLogger.Message, colorEnd))
+  fmt.Print(fmt.Sprintf("%s[Spec Success]%s %sMocked Fatalf called with message: %s%s\n\n", greenBoldStart, colorEnd, greenStart, mockLogger.Message, colorEnd))
 }
 
 func TestSpecToEqIntSuccess(testing *testing.T) {
